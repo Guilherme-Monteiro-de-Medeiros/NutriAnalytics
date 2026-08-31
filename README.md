@@ -38,7 +38,7 @@ O repositório também conta com um pipeline de dados em Python voltado para a a
 
 1. Clone este repositório:
 ```bash
-git clone https://github.com/Guilherme-Monteiro-de-Medeiros/Nutricionista.git
+git clone https://github.com/Guilherme-Monteiro-de-Medeiros/NutriAnalytics.git
 ```
 
 2. **Para a Interface Web:** Abra o arquivo `index.html` em qualquer navegador web moderno.
