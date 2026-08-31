@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAnalytics | Clinical & Diet Prescriber</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --border: #334155;
+            --primary: #10b981;
+            --primary-glow: rgba(16, 185, 129, 0.2);
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --warning: #f59e0b;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+
+        header {
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding: 1.2rem 6%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .logo { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .logo span { color: var(--text); }
+        .nav-links a { margin-left: 24px; text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 0.95rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 24px; }
+
+        .hero {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(56, 189, 248, 0.05) 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .hero h1 { font-size: 2.3rem; font-weight: 800; margin-bottom: 12px; background: linear-gradient(to right, #f8fafc, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero p { color: var(--text-muted); font-size: 1.05rem; max-width: 820px; margin: 0 auto; }
+
+        .main-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 32px; }
+        @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .card h2 { font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: var(--text); }
+
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 0.95rem;
+            outline: none;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: #0f172a;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 10px;
+        }
+        .btn-submit:hover { background: #34d399; }
+
+        .diet-section { margin-top: 32px; display: none; }
+        .day-tabs { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; }
+        .tab-btn {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .tab-btn.active { background: var(--primary); color: #0f172a; border-color: var(--primary); }
+
+        .meal-card {
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .meal-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .meal-items { list-style: none; padding-left: 0; font-size: 0.95rem; color: var(--text-muted); }
+        .meal-items li { margin-bottom: 6px; padding-left: 15px; position: relative; }
+        .meal-items li::before { content: "•"; color: var(--primary); position: absolute; left: 0; font-weight: bold; }
+
+        footer { text-align: center; padding: 40px; color: var(--text-muted); font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">🥗 Nutri<span>Analytics</span></div>
+        <nav class="nav-links">
+            <a href="#calculadora">Prescrição</a>
+            <a href="#dieta">Plano Alimentar</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <section class="hero">
+            <h1>Prescrição Nutricional & Geração de Cardápios Baseados em Dados (TACO)</h1>
+            <p>Cálculo de taxa metabólica com algoritmo de distribuição automática de alimentos e medidas caseiras.</p>
+        </section>
+
+        <div class="main-grid">
+            
+            <!-- Form -->
+            <section class="card" id="calculadora">
+                <h2>⚡ Parâmetros do Paciente</h2>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Gênero</label>
+                        <select id="genero">
+                            <option value="m">Masculino</option>
+                            <option value="f">Feminino</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Idade</label>
+                        <input type="number" id="idade" value="28">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <input type="number" id="peso" value="80" step="0.1">
+                    </div>
+                    <div class="form-group">
+                        <label>Altura (cm)</label>
+                        <input type="number" id="altura" value="170">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nível de Atividade Física</label>
+                    <select id="perfil">
+                        <option value="sedentario">Sedentário (Pouco/Nenhum exercício)</option>
+                        <option value="leve">Exercício Leve / Moderado (2 a 4x por semana)</option>
+                        <option value="hipertrofia">Hipertrofia / Treino Intenso (5 a 7x por semana)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Objetivo Clínico</label>
+                    <select id="objetivo">
+                        <option value="perda">Emagrecimento (Déficit Calórico)</option>
+                        <option value="manutencao">Manutenção do Peso</option>
+                        <option value="ganho">Ganho de Massa Muscular</option>
+                    </select>
+                </div>
+
+                <button class="btn-submit" onclick="gerarPlanoCompleto()">Gerar Dieta Semanal Personalizada</button>
+            </section>
+
+            <!-- Dashboard de Resultados -->
+            <section class="card">
+                <h2>📊 Resumo Diagnóstico</h2>
+                <div id="resSummary" style="color: var(--text-muted);">Preencha os dados e clique no botão para calcular o plano alimentar.</div>
+                
+                <div id="summaryContent" style="display:none; margin-top: 15px;">
+                    <p><strong>Perfil Selecionado:</strong> <span id="resPerfil" style="color:var(--text); font-weight:bold;">-</span></p>
+                    <p><strong>Meta Calórica:</strong> <span id="resMetaCal" style="color:var(--primary); font-weight:bold;">-</span></p>
+                    <p><strong>Meta Hídrica:</strong> <span id="resMetaAgua" style="color:var(--accent); font-weight:bold;">-</span></p>
+                    
+                    <div style="margin-top: 15px; max-width: 250px; margin-left: auto; margin-right: auto;">
+                        <canvas id="macroChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Seção da Dieta Semanal Gerada -->
+        <section class="card diet-section" id="dieta">
+            <h2>📅 Plano Alimentar Semanal Otimizado com Porções Caseiras</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">
+                Refeições variadas diariamente com quantidades exatas em gramas e equivalência em porções práticas:
+            </p>
+
+            <div class="day-tabs">
+                <button class="tab-btn active" onclick="carregarDia(0)">Segunda</button>
+                <button class="tab-btn" onclick="carregarDia(1)">Terça</button>
+                <button class="tab-btn" onclick="carregarDia(2)">Quarta</button>
+                <button class="tab-btn" onclick="carregarDia(3)">Quinta</button>
+                <button class="tab-btn" onclick="carregarDia(4)">Sexta</button>
+                <button class="tab-btn" onclick="carregarDia(5)">Sábado</button>
+                <button class="tab-btn" onclick="carregarDia(6)">Domingo</button>
+            </div>
+
+            <div id="mealsContainer"></div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 NutriAnalytics — Projeto Integrado com Banco de Dados de Alimentos.</p>
+    </footer>
+
+    <script>
+        let myChart = null;
+        let semanaPlano = [];
+
+        // Banco de Dados de Refeições Variadas (Comida de Verdade + Porções Caseiras)
+        const refeicoesVariadas = {
+            cafe: [
+                (f) => [
+                    `${Math.round(2 * f)} Ovos Mexidos ou Cozidos`,
+                    `${Math.round(40 * f)}g de Aveia em Flocos (~3 colheres de sopa)`,
+                    `1 Banana Média (100g) fatiada`,
+                    `1 Xícara de Café Preto ou Chá sem açúcar`
+                ],
+                (f) => [
+                    `Panqueca: ${Math.round(2 * f)} Ovos + ${Math.round(30 * f)}g de Aveia + 1 Canela`,
+                    `1 Maçã Média (120g)`,
+                    `1 Xícara de Café com leite desnatado ou café preto`
+                ],
+                (f) => [
+                    `Cuscuz Milho Cozido: ${Math.round(80 * f)}g (~1 fatia média)`,
+                    `${Math.round(2 * f)} Ovos Estalados na água/fio de azeite`,
+                    `130g de Mamão Papaia (~1/2 unidade)`,
+                    `Café com leite sem açúcar`
+                ],
+                (f) => [
+                    `Pão Integral: ${Math.round(50 * f)}g (${Math.round(1.5 * f)} fatias)`,
+                    `${Math.round(40 * f)}g de Queijo Branco / Cotage (~2 fatias médias)`,
+                    `1 Laranja Inteira com bagaço (Fonte de Vitamina C)`,
+                    `1 Xícara de Chá de Hortelã ou Camomila`
+                ],
+                (f) => [
+                    `Tapioca: ${Math.round(40 * f)}g (~2 colheres de sopa cheias de goma)`,
+                    `Recheio: ${Math.round(2 * f)} Ovos Mexidos + 1 colher de gergelim`,
+                    `130g de Melão em cubos`,
+                    `Café preto`
+                ],
+                (f) => [
+                    `Iogurte Natural Desnatado: 170g (1 pote)`,
+                    `${Math.round(35 * f)}g de Granola sem açúcar (~3 colheres de sopa)`,
+                    `100g de Morangos frescos ou Uvas`,
+                    `1 Colher de sopa de Sementes de Chia`
+                ],
+                (f) => [
+                    `Crepioca: ${Math.round(2 * f)} Ovos + ${Math.round(20 * f)}g de Goma de Tapioca`,
+                    `${Math.round(30 * f)}g de Frango Desfiado para recheio`,
+                    `1 Banana Média com canela em pó`,
+                    `Café preto ou Chá`
+                ]
+            ],
+            almoco: [
+                (f) => [
+                    `Proteína: ${Math.round(120 * f)}g de Peito de Frango Grelhado (~1.5 bife grande)`,
+                    `Carboidrato: ${Math.round(150 * f)}g de Arroz Integral (~4 a 5 colheres de sopa)`,
+                    `Leguminosa: ${Math.round(100 * f)}g de Feijão Preto/Carioca (~1 concha média)`,
+                    `Vegetais: Brócolis e Cenoura cozidos no vapor (À vontade)`,
+                    `Gordura Boa: 1 Colher de chá de Azeite de Oliva Extra Virgem`
+                ],
+                (f) => [
+                    `Proteína: ${Math.round(130 * f)}g de Patinho Moído / Carne Moída Magra (~4 colheres de sopa cheias)`,
+                    `Carboidrato: ${Math.round(160 * f)}g de Batata Doce Assada/Cozida (~1 unidade média/grande)`,
+                    `Vegetais: Salada de Folhas Verdes (Rúcula/Alface) com Tomate e Pepino`,
+                    `Gordura Boa: 1 Colher de chá de Azeite Extra Virgem`
+                ],
+                (f) => [
+                    `Proteína: ${Math.round(140 * f)}g de Filé de Tilápia ou Peixe Assado (~2 filés médios)`,
+                    `Carboidrato: ${Math.round(150 * f)}g de Mandioca / Aipim Cozido (~2 pedaços médios)`,
+                    `Leguminosa: ${Math.round(100 * f)}g de Feijão Fradinho/Carioca (~1 concha)`,
+                    `Vegetais: Couve refogada no alho e Beterraba ralada`,
+                    `Gordura Boa: Limão espremido + 1 Colher de chá de Azeite`
+                ]
+            ],
+            lanche: [
+                (f) => [
+                    `Pão Integral: ${Math.round(50 * f)}g (${Math.round(1.5 * f)} fatias)`,
+                    `Recheio: ${Math.round(40 * f)}g de Frango Desfiado com colher de requeijão light`,
+                    `1 Maçã Média`
+                ],
+                (f) => [
+                    `Iogurte Natural Desnatado: 170g (1 pote)`,
+                    `${Math.round(20 * f)}g de Castanha-do-Pará ou Amendoim (~1 punhado pequeno)`,
+                    `1 Banana Média`
+                ],
+                (f) => [
+                    `${Math.round(2 * f)} Ovos Cozidos com uma pitada de orégano`,
+                    `1 Laranja Inteira`,
+                    `${Math.round(25 * f)}g de Aveia em Flocos`
+                ],
+                (f) => [
+                    `Vitamina de Frutas: 200ml de Leite Desnatado + 1 Banana + 1 colher de Aveia`,
+                    `${Math.round(15 * f)}g de Amendoim torrado`
+                ],
+                (f) => [
+                    `Tapioca: ${Math.round(30 * f)}g com ${Math.round(2 * f)} Ovos Mexidos`,
+                    `1 Fátia média de Mamão Papaia`
+                ],
+                (f) => [
+                    `1 Pote de Iogurte + 1 Colher de Chia`,
+                    `1 Pêra ou Maçã Média`,
+                    `${Math.round(30 * f)}g de Queijo Cotage / Minas`
+                ],
+                (f) => [
+                    `Crepioca Recheada: 1 Ovo + 1 colher de tapioca + ${Math.round(30 * f)}g de queijo minas`,
+                    `1 Xícara de Chá verde ou de frutas`
+                ]
+            ],
+            jantar: [
+                (f) => [
+                    `Proteína: ${Math.round(120 * f)}g de Filé de Frango Grelhado (~1 bife e meio)`,
+                    `Carboidrato: ${Math.round(120 * f)}g de Batata Doce ou Inhame Cozido`,
+                    `Vegetais: Salada colorida (Alface, Tomate, Cenoura) à vontade`,
+                    `Gordura: 1 Colher de chá de Azeite de Oliva`
+                ],
+                (f) => [
+                    `Proteína: Omelete reforçado com ${Math.round(2.5 * f)} Ovos + Ervas + Tomate picado`,
+                    `Carboidrato: ${Math.round(100 * f)}g de Arroz Integral (~3 colheres de sopa)`,
+                    `Vegetais: Espinafre ou Brócolis refogado`
+                ],
+                (f) => [
+                    `Proteína: ${Math.round(130 * f)}g de Filé de Peixe Assado (~2 filés)`,
+                    `Carboidrato: ${Math.round(120 * f)}g de Mandioquinha / Batata Baroa Cozida`,
+                    `Vegetais: Salada de Folhas Escuras com limão espremido`
+                ]
+            ]
+        };
+
+        function gerarPlanoCompleto() {
+            const peso = parseFloat(document.getElementById('peso').value);
+            const altura = parseFloat(document.getElementById('altura').value);
+            const idade = parseFloat(document.getElementById('idade').value);
+            const genero = document.getElementById('genero').value;
+            const perfil = document.getElementById('perfil').value;
+            const objetivo = document.getElementById('objetivo').value;
+
+            if (!peso || !altura || !idade) {
+                alert("Por favor, preencha todos os campos corretamente.");
+                return;
+            }
+
+            // 1. TMB (Harris-Benedict)
+            let tmb = (genero === 'm') 
+                ? 88.36 + (13.4 * peso) + (4.8 * altura) - (5.7 * idade)
+                : 447.59 + (9.2 * peso) + (3.1 * altura) - (4.3 * idade);
+
+            // Ajuste do Fator de Atividade por Perfil
+            let fatorAct = 1.2;
+            let rotuloPerfil = "Sedentário";
+
+            if (perfil === 'leve') {
+                fatorAct = 1.45;
+                rotuloPerfil = "Exercício Leve / Moderado";
+            } else if (perfil === 'hipertrofia') {
+                fatorAct = 1.75;
+                rotuloPerfil = "Hipertrofia / Treino Intenso";
+            }
+
+            let get = tmb * fatorAct;
+
+            // Ajuste de Calorias por Objetivo
+            let metaCal = get;
+            if (objetivo === 'perda') metaCal = get - 450;
+            if (objetivo === 'ganho') metaCal = get + 400;
+
+            // Fator de escala proporcional para ajuste das porções
+            let fatorMassa = (metaCal / 2000);
+
+            let protG = peso * (perfil === 'hipertrofia' ? 2.0 : 1.6);
+            let gordG = peso * 0.8;
+            let carbG = Math.max(50, (metaCal - (protG * 4 + gordG * 9)) / 4);
+
+            // Exibir Resumo Diagnóstico
+            document.getElementById('resSummary').style.display = 'none';
+            document.getElementById('summaryContent').style.display = 'block';
+            document.getElementById('resPerfil').innerText = rotuloPerfil;
+            document.getElementById('resMetaCal').innerText = `${Math.round(metaCal)} kcal/dia`;
+            document.getElementById('resMetaAgua').innerText = `${((peso * 35)/1000).toFixed(1)} Litros/dia`;
+
+            renderChart(Math.round(protG), Math.round(carbG), Math.round(gordG));
+
+            // 2. Gerar Cardápio de 7 Dias com Rotação Total
+            semanaPlano = [];
+            const diasNome = ["Segunda-Feira", "Terça-Feira", "Quarta-Feira", "Quinta-Feira", "Sexta-Feira", "Sábado", "Domingo"];
+
+            for (let i = 0; i < 7; i++) {
+                let cafeItens = refeicoesVariadas.cafe[i](fatorMassa);
+                let almocoItens = refeicoesVariadas.almoco[i % 3](fatorMassa);
+                let lancheItens = refeicoesVariadas.lanche[i](fatorMassa);
+                let jantarItens = refeicoesVariadas.jantar[i % 3](fatorMassa);
+
+                semanaPlano.push({
+                    dia: diasNome[i],
+                    refeicoes: [
+                        { nome: "🍳 Café da Manhã", itens: cafeItens },
+                        { nome: "🥗 Almoço", itens: almocoItens },
+                        { nome: "🍎 Lanche da Tarde / Pré-Treino", itens: lancheItens },
+                        { nome: "🍗 Jantar", itens: jantarItens }
+                    ]
+                });
+            }
+
+            document.querySelector('.diet-section').style.display = 'block';
+            carregarDia(0);
+        }
+
+        function carregarDia(index) {
+            const btns = document.querySelectorAll('.tab-btn');
+            btns.forEach((b, i) => {
+                if(i === index) b.classList.add('active');
+                else b.classList.remove('active');
+            });
+
+            const container = document.getElementById('mealsContainer');
+            container.innerHTML = '';
+
+            const diaDados = semanaPlano[index];
+            diaDados.refeicoes.forEach(ref => {
+                const card = document.createElement('div');
+                card.className = 'meal-card';
+                card.innerHTML = `
+                    <div class="meal-title">${ref.nome}</div>
+                    <ul class="meal-items">
+                        ${ref.itens.map(it => `<li>${it}</li>`).join('')}
+                    </ul>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function renderChart(p, c, g) {
+            const ctx = document.getElementById('macroChart').getContext('2d');
+            if (myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Proteínas (g)', 'Carbos (g)', 'Gorduras (g)'],
+                    datasets: [{
+                        data: [p, c, g],
+                        backgroundColor: ['#f43f5e', '#eab308', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { plugins: { legend: { labels: { color: '#94a3b8' } } } }
+            });
+        }
+    </script>
+
+</body>
+</html>

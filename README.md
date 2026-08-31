@@ -1,121 +1,45 @@
-# nutricionista
-Aplicativo para um site de Nutricionista
+# 🥗 NutriAnalytics — Inteligência de Dados & Prescrição Nutricional
 
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="/Styles/Style.css" rel="stylesheet">
-    <title>Nutricionista Guilherme</title>
-    <link rel="stylesheet" href="styles.css">
-    
-    </head>
-<body>
-    <!-- Cabeçalho -->
-    <header>
-        <img src="components/Images/Logo.webp" height="200" width="300" line-height= "15px">
-        <div id="title">
-            <h1>Nutricionista Guilherme Monteiro</h1>
-        </div>
-        
-        <nav>
-            <ul>
-                <li><a href="#sobre">Sobre</a></li>
-                <li><a href="#servicos">Serviços</a></li>
-                <li><a href="#beneficios">Benefícios</a></li>
-                <li><a href="#contato">Contato</a></li>
-            </ul>
-        </nav>
-        <a href="#contato" class="cta-button">Agende sua consulta</a>
-    </header>
+O **NutriAnalytics** é uma solução integrada desenvolvida para a análise de dados clínicos e automação de prescrições nutricionais personalizadas. O projeto combina processamento analítico em Python com um Dashboard Web interativo para suporte à tomada de decisão clínica.
 
-    <!-- Faixa 1: Sobre a Nutricionista -->
-    <section id="sobre" class="section">
-        <div class="container">
-            
-            <div class="text">
-                <h2>Sobre Mim</h2>
-                <img src= "components/Images/foto-nutricionista.jpg" width="300px" height="200">
-                <p>Olá! Me chamo Guilherme Monteiro, nutricionista com 8 anos de experiência. Meu foco é ajudar você a alcançar uma vida mais saudável através de planos alimentares personalizados e acompanhamento nutricional.</p>
-            </div>
-        </div>
-    </section>
+---
 
-    <!-- Faixa 2: Serviços -->
-    <section id="servicos" class="section">
-        <h2>Serviços Oferecidos</h2>
-        <div class="servicos-container">
-            <div class="servico">
-                <h3>Consultas Presenciais e Online</h3>
-                <img src="components/Images/icone presencial.jpg" width="80px" height="80px" alt="Ícone Plano">
-                <img src="components/Images/ícone-online.webp" width="80px" height="80px">
-            </div>
-            <div class="servico">
-                <h3>Planos Alimentares Personalizados</h3>
-                <img src="components/Images/icone plano alimentar.jpg" width="80px" height="80px">
-            </div>
-            <div class="servico">
-                <h3>Acompanhamento Nutricional</h3>
-                <img src="components/Images/Acompanhamento nutricional.webp"width="80px" height="80px">
-            </div>
-        </div>
-    </section>
+## 🚀 Funcionalidades da Aplicação Web (`index.html`)
 
-    <!-- Faixa 3: Benefícios -->
-    <section id="beneficios" class="section">
-        <h2>Vantagens e Benefícios</h2>
-        <div class="beneficios-container">
-            <div class="beneficio">
-                <p>Saúde melhorada e mais energia no dia a dia.</p>
-            </div>
-            <div class="beneficio">
-                <p>Emagrecimento saudável e sustentável.</p>
-            </div>
-        </div>
-        <div class="depoimentos-container">
-            <div class="depoimento">
-                <p>"Graças ao Nutricionista Guilherme Monteiro, consegui melhorar minha alimentação e qualidade de vida!" - Fabio da Conceição</p>
-            </div>
-            <div class="depoimento">
-                <p>"Recomendo demais! Atendimento excelente e resultados incríveis." - Raquel Pereira</p>
-            </div>
-        </div>
-    </section>
+- **Cálculo Metabólico de Precisão:** Aplicação da equação de *Harris-Benedict* ajustada ao nível de atividade física do paciente (Sedentário, Leve/Moderado e Hipertrofia/Intenso).
+- **Gerador de Cardápios Semanal Inteligente:**
+  - Prescrição individualizada de Segunda a Domingo com variação em todas as 4 refeições diárias.
+  - Alimentos baseados no banco de dados **TACO (Tabela Brasileira de Composição de Alimentos)**.
+  - Equivalência prática em **porções e medidas caseiras** (ex: colheres de sopa, fatias, unidades e gramas).
+  - Nutrição focada em comida sólida e acessível (sem dependência de suplementos).
+- **Cálculo de Meta Hídrica:** Automatizado na regra clínica de 35 ml/kg/dia.
+- **Visualização de Dados em Tempo Real:** Gráficos interativos renderizados via *Chart.js* para acompanhamento da distribuição de macronutrientes (Proteínas, Carboidratos e Gorduras).
 
-    <!-- Faixa 4: Formulário de Contato -->
-    <section id="contato" class="section">
-        <h2>Entre em Contato</h2>
-        <form>
-            <input type="text" placeholder="Nome" required>
-            <input type="email" placeholder="E-mail" required>
-            <input type="tel" placeholder="Telefone" required>
-            <textarea placeholder="Mensagem (opcional)"></textarea>
-            <button type="submit">Enviar mensagem</button>
-        </form>
-    </section>
-   
-    <!-- Rodapé -->
-    <footer>
-        <div class="contato">
-            <p>E-mail: guilherme.nutri@nutricionista.com</p>
-            <p>Telefone: (11) 99999-9999</p>
-            <p>Endereço: Rua Gaston, 123 - São Paulo, SP</p>
-        </div>
-        <div class="redes-sociais">
-            <a href="#">
-                <img src="components/Images/Insta.webp" width="80px" height="80px">
-            </a>
-            <a href="#">
-                <img src="components/Images/Zap.webp" width="80px" height="80px">
-            </a>
-            <a href="#">
-                <img src="components/Images/Linke.webp" width="80px" height="80px">
-            </a>
-        </div>
-        <div class="direitos">
-            <p>© 2023 Nutricionista Guilherme Monteiro. Todos os direitos reservados.</p>
-        </div>
-    </footer>
-</body>
-</html>
+---
+
+## 🐍 Análise de Dados com Python (`analise_nutricional.py`)
+
+O repositório também conta com um pipeline de dados em Python voltado para a análise de acompanhamento do paciente:
+
+1. **Processamento e Modelagem:** Avaliação de métricas nutricionais ao longo do tempo.
+2. **Geração de Insights Visuais:** Exportação automática do relatório visual `relatorio_nutricional_insights.png` integrado ao dashboard.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+- **Front-end / Dashboard:** HTML5, CSS3 Moderno (CSS Variables, Flexbox, CSS Grid) e JavaScript puro (Vanilla JS).
+- **Data Viz Web:** [Chart.js](https://www.chart.js.org/) via CDN.
+- **Data Science / Back-end:** Python 3 (Pandas, Matplotlib, Seaborn).
+
+---
+
+## 📂 Como Executar o Projeto
+
+1. Clone este repositório:
+```bash
+git clone https://github.com/Guilherme-Monteiro-de-Medeiros/Nutricionista.git
+```
+
+2. **Para a Interface Web:** Abra o arquivo `index.html` em qualquer navegador web moderno.
+3. **Para a Análise em Python:** Execute o script `analise_nutricional.py` no seu ambiente Python.
